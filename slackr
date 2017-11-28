@@ -1,0 +1,71 @@
+#!/bin/bash
+
+WEBHOOK_URL=""
+
+# Install:
+#   set your webhook url in the WEBHOOK_URL variable above
+#   make this file executable with chmod +x
+#   to make it globally available copy this file to ~/bin/ or create a symbolic link to it
+
+# Usage: 
+#   slackr some text
+#   ls -alF | slackr -r @smith
+#   slackr -r #general < logfile.txt
+#   slackr -c good -n friendlybot -i :cat: hello
+
+usage() { echo "Usage:
+  $0 [-r <channel or user>] [-c <good|warning|danger|#hex>] [-n <bot name>] [-i <bot icon>] <text>" 1>&2; exit 1; }
+
+recipient=""
+color=""
+botname=""
+boticon=""
+while getopts ":r:c:n:i:wh:" o; do
+    case "${o}" in
+        r)
+            recipient="\"channel\":\"${OPTARG}\", "
+            ;;
+        c)
+            color="\"color\":\"${OPTARG}\", "
+            ;;
+        n)
+            botname="\"username\":\"${OPTARG}\", "
+            ;;
+        i)
+            boticon="\"icon_emoji\":\"${OPTARG}\", "
+            ;;
+        wh)
+            WEBHOOK_URL=${OPTARG}
+            ;;
+    esac
+done
+shift $((OPTIND-1))
+
+if [[ $WEBHOOK_URL == "" ]]; then
+    echo "No webhook URL specified. Please set WEBHOOK_URL in $0"
+    exit 1
+fi
+
+text=$*
+
+if [[ $text == "" ]]; then
+    if [ -t 0 ]; then
+        echo "No text specified"
+        usage
+        exit 1
+    else
+        while IFS= read -r line || [ -n "$line" ]; do
+            text="$text$line"$'\n'
+        done
+    fi
+fi
+
+json_escape () {
+    printf '%s' "$1" | python -c 'import json,sys; print(json.dumps(sys.stdin.read()))'
+}
+
+payload="payload={$recipient$botname$boticon\"attachments\":[{$color\"text\":$(json_escape "$text")}]}"
+
+curl -s --data-urlencode "$payload" "$WEBHOOK_URL"
+echo
+
