@@ -1,7 +1,7 @@
 # slackr
 
 ## Install
- * set your webhook url in the WEBHOOK_URL variable of [slackr](slackr)
+ * set [your webhook](https://my.slack.com/services/new/incoming-webhook/) url in the WEBHOOK_URL variable of [slackr](slackr)
  * make [slackr](slackr) executable with chmod +x
  * to make it globally available copy [slackr](slackr) to ~/bin/ or create a symbolic link to it
 
