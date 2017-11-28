@@ -9,6 +9,6 @@
 ```bash
 slackr some text
 ls -alF | slackr -r @smith
-slackr -r #general < logfile.txt
+slackr -r general < logfile.txt
 slackr -c good -n friendlybot -i :cat: hello
 ```
