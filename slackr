@@ -64,8 +64,8 @@ json_escape () {
     printf '%s' "$1" | python -c 'import json,sys; print(json.dumps(sys.stdin.read()))'
 }
 
-payload="payload={$recipient$botname$boticon\"attachments\":[{$color\"text\":$(json_escape "$text")}]}"
+payload="payload={$recipient$botname$boticon\"attachments\":[{$color\"text\":$(json_escape "\`\`\`$text\`\`\`"),\"mrkdwn_in\":[\"text\"]}]}"
 
 curl -s --data-urlencode "$payload" "$WEBHOOK_URL"
-echo
+echo 
 
