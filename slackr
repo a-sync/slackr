@@ -7,20 +7,29 @@ WEBHOOK_URL=""
 #   make this file executable with chmod +x
 #   to make it globally available copy this file to ~/bin/ or create a symbolic link to it
 
-# Usage: 
-#   slackr some text
-#   ls -alF | slackr -r @smith
-#   slackr -r general < logfile.txt
-#   slackr -c good -n friendlybot -i :cat: hello
+usage() { echo "Usage: $(basename $0) [options] <text>
 
-usage() { echo "Usage:
-  $0 [-r <channel or user>] [-c <good|warning|danger|#hex>] [-n <bot name>] [-i <bot icon>] <text>" 1>&2; exit 1; }
+Options:
+    [-r <channel or @user>] 
+    [-c <good|warning|danger|#hex color>] 
+    [-n <bot name>] 
+    [-i <bot icon emoji>] 
+    [-f <footer text>] 
+
+Examples:
+    $(basename $0) some text
+    $(basename $0) -r general < logfile.txt
+    ls -alF | $(basename $0) -r @smith
+    tail -n 10 /var/log/syslog | $(basename $0) -f \"\$(id -un) \$(hostname -f)\"
+    $(basename $0) -c good -n friendlybot -i :cat: hello
+" 1>&2; exit 1; }
 
 recipient=""
 color=""
 botname=""
 boticon=""
-while getopts ":r:c:n:i:wh:" o; do
+footer=""
+while getopts ":r:c:n:i:f:wh:" o; do
     case "${o}" in
         r)
             recipient="\"channel\":\"${OPTARG}\", "
@@ -34,6 +43,9 @@ while getopts ":r:c:n:i:wh:" o; do
         i)
             boticon="\"icon_emoji\":\"${OPTARG}\", "
             ;;
+        f)
+            footer="\"footer\":\"${OPTARG}\", "
+            ;;
         wh)
             WEBHOOK_URL=${OPTARG}
             ;;
@@ -42,7 +54,7 @@ done
 shift $((OPTIND-1))
 
 if [[ $WEBHOOK_URL == "" ]]; then
-    echo "No webhook URL specified. Please set WEBHOOK_URL in $0"
+    echo "No webhook URL specified. Please set WEBHOOK_URL in $(readlink -f $0)"
     exit 1
 fi
 
@@ -50,7 +62,7 @@ text=$*
 
 if [[ $text == "" ]]; then
     if [ -t 0 ]; then
-        echo "No text specified"
+        echo "No text specified"$'\n'
         usage
         exit 1
     else
@@ -64,8 +76,7 @@ json_escape () {
     printf '%s' "$1" | python -c 'import json,sys; print(json.dumps(sys.stdin.read()))'
 }
 
-payload="payload={$recipient$botname$boticon\"attachments\":[{$color\"text\":$(json_escape "\`\`\`$text\`\`\`"),\"mrkdwn_in\":[\"text\"]}]}"
+payload="payload={$recipient$botname$boticon\"attachments\":[{$color$footer\"text\":$(json_escape "\`\`\`$text\`\`\`"), \"mrkdwn_in\":[\"text\"]}]}"
 
 curl -s --data-urlencode "$payload" "$WEBHOOK_URL"
 echo 
-
