@@ -2,11 +2,6 @@
 
 WEBHOOK_URL=""
 
-# Install:
-#   set your webhook url in the WEBHOOK_URL variable above
-#   make this file executable with chmod +x
-#   to make it globally available copy this file to ~/bin/ or create a symbolic link to it
-
 usage() { echo "Usage: $(basename $0) [options] <text>
 
 Options:
