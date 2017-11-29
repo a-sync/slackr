@@ -91,5 +91,5 @@ json_escape () {
 
 payload="payload={$recipient$boticon$botname\"attachments\":[{$color$authorname$title$titlelink$footer\"text\":$(json_escape "\`\`\`$text\`\`\`"), \"mrkdwn_in\":[\"text\"]}]}"
 
-curl -s --data-urlencode "$payload" "$WEBHOOK_URL"
+curl -s --data-urlencode "$payload" "$WEBHOOK_URL" 2>&1
 echo 
