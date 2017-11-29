@@ -1,14 +1,14 @@
 # slackr
 
 ### Requirements
-    * bash compatible shell
-    * sane install of python
-    * sane install of curl
+ * bash compatible shell
+ * sane install of python
+ * sane install of curl
 
 ### Install
-    * set [your webhook](https://my.slack.com/services/new/incoming-webhook/) url in the WEBHOOK_URL variable of [slackr](slackr)
-    * make [slackr](slackr) executable with chmod +x
-    * to make it globally available copy [slackr](slackr) to ~/bin/ or create a symbolic link to it
+ * set [your webhook](https://my.slack.com/services/new/incoming-webhook/) url in the WEBHOOK_URL variable of [slackr](slackr)
+ * make [slackr](slackr) executable with chmod +x
+ * to make it globally available copy [slackr](slackr) to ~/bin/ or create a symbolic link to it
 ```bash
 cd slackr
 
