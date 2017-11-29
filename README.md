@@ -28,15 +28,19 @@ Usage: slackr [options] <text>
 
 Options:
     [-r <channel or @user>] 
-    [-c <good|warning|danger|#hex color>] 
-    [-n <bot name>] 
     [-i <bot icon emoji>] 
+    [-n <bot name>] 
+    [-c <good|warning|danger|#hex color>] 
+    [-a <author name>]
+    [-t <title>]
+    [-l <title link url>]
     [-f <footer text>] 
+    [-w <webhook url>]
 
 Examples:
     slackr some text
-    slackr -r general < logfile.txt
-    ls -alF | slackr -r @smith
-    tail -n 10 /var/log/syslog | slackr -f "$(id -un) $(hostname -f)"
     slackr -c good -n friendlybot -i :cat: hello
+    slackr -r general < logfile.txt
+    ls -la | slackr -r @smith
+    tail -n 10 /var/log/syslog | slackr -t "$(id -un) $(hostname -f)"
 ```

@@ -2,64 +2,82 @@
 
 WEBHOOK_URL=""
 
-usage() { echo "Usage: $(basename $0) [options] <text>
+usage() { echo "Usage: $(basename "$0") [options] <text>
 
 Options:
     [-r <channel or @user>] 
-    [-c <good|warning|danger|#hex color>] 
-    [-n <bot name>] 
     [-i <bot icon emoji>] 
+    [-n <bot name>] 
+    [-c <good|warning|danger|#hex color>] 
+    [-a <author name>]
+    [-t <title>]
+    [-l <title link url>]
     [-f <footer text>] 
+    [-w <webhook url>]
 
 Examples:
-    $(basename $0) some text
-    $(basename $0) -r general < logfile.txt
-    ls -alF | $(basename $0) -r @smith
-    tail -n 10 /var/log/syslog | $(basename $0) -f \"\$(id -un) \$(hostname -f)\"
-    $(basename $0) -c good -n friendlybot -i :cat: hello
+    $(basename "$0") some text
+    $(basename "$0") -c good -n friendlybot -i :cat: hello
+    $(basename "$0") -r general < logfile.txt
+    ls -la | $(basename "$0") -r @smith
+    tail -n 10 /var/log/syslog | $(basename "$0") -t \"\$(id -un) \$(hostname -f)\"
 " 1>&2; exit 1; }
 
 recipient=""
-color=""
-botname=""
 boticon=""
+botname=""
+color=""
+authorname=""
+title=""
+titlelink=""
 footer=""
-while getopts ":r:c:n:i:f:wh:" o; do
+while getopts ":r:i:n:c:a:t:l:f:w:" o; do
     case "${o}" in
         r)
             recipient="\"channel\":\"${OPTARG}\", "
             ;;
-        c)
-            color="\"color\":\"${OPTARG}\", "
+        i)
+            boticon="\"icon_emoji\":\"${OPTARG}\", "
             ;;
         n)
             botname="\"username\":\"${OPTARG}\", "
             ;;
-        i)
-            boticon="\"icon_emoji\":\"${OPTARG}\", "
+        c)
+            color="\"color\":\"${OPTARG}\", "
+            ;;
+        a)
+            authorname="\"author_name\":\"${OPTARG}\", "
+            ;;
+        t)
+            title="\"title\":\"${OPTARG}\", "
+            ;;
+        l)
+            titlelink="\"title_link\":\"${OPTARG}\", "
             ;;
         f)
             footer="\"footer\":\"${OPTARG}\", "
             ;;
-        wh)
-            WEBHOOK_URL=${OPTARG}
+        w)
+            WEBHOOK_URL="${OPTARG}"
+            ;;
+        *)
+            echo "Illegal option: ${OPTARG}"$'\n'
+            usage
             ;;
     esac
 done
 shift $((OPTIND-1))
 
-if [[ $WEBHOOK_URL == "" ]]; then
-    echo "No webhook URL specified. Please set WEBHOOK_URL in $(readlink -f $0)"
-    exit 1
+if [[ "$WEBHOOK_URL" == "" ]]; then
+    echo "No webhook URL specified. Please set WEBHOOK_URL in $(readlink -f "$0") or use the -w option."$'\n'
+    usage
 fi
 
 text=$*
-
 if [[ $text == "" ]]; then
     if [ -t 0 ]; then
         echo "No text specified"$'\n'
         usage
-        exit 1
     else
         while IFS= read -r line || [ -n "$line" ]; do
             text="$text$line"$'\n'
@@ -71,7 +89,7 @@ json_escape () {
     printf '%s' "$1" | python -c 'import json,sys; print(json.dumps(sys.stdin.read()))'
 }
 
-payload="payload={$recipient$botname$boticon\"attachments\":[{$color$footer\"text\":$(json_escape "\`\`\`$text\`\`\`"), \"mrkdwn_in\":[\"text\"]}]}"
+payload="payload={$recipient$boticon$botname\"attachments\":[{$color$authorname$title$titlelink$footer\"text\":$(json_escape "\`\`\`$text\`\`\`"), \"mrkdwn_in\":[\"text\"]}]}"
 
 curl -s --data-urlencode "$payload" "$WEBHOOK_URL"
 echo 
