@@ -11,9 +11,9 @@ cd slackr
 ```
  * set [your webhook](https://my.slack.com/services/new/incoming-webhook/) url in the WEBHOOK_URL variable of [slackr](slackr#L3)
 ```bash
-read -p "URL: " WHURL && sed -i '3s|.*|WEBHOOK_URL="'"$WHURL"'"|' slackr
+read -p "URL: " WHURL && sed -i "3s|.*|WEBHOOK_URL=\"$WHURL\"|" slackr
 ```
- * make [slackr](slackr) executable with chmod +x
+ * make the file executable
 ```bash
 chmod +x slackr
 ```
