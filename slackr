@@ -23,6 +23,10 @@ Examples:
     tail -n 10 /var/log/syslog | $(basename "$0") -t \"\$(id -un) \$(hostname -f)\"
 " 1>&2; exit 1; }
 
+json_escape () {
+    printf '%s' "$1" | python -c 'import json,sys; print(json.dumps(sys.stdin.read()))'
+}
+
 recipient=""
 boticon=""
 botname=""
@@ -34,28 +38,28 @@ footer=""
 while getopts ":r:i:n:c:a:t:l:f:w:" o; do
     case "${o}" in
         r)
-            recipient="\"channel\":\"${OPTARG}\", "
+            recipient="\"channel\":$(json_escape "${OPTARG}"),"
             ;;
         i)
-            boticon="\"icon_emoji\":\"${OPTARG}\", "
+            boticon="\"icon_emoji\":$(json_escape "${OPTARG}"),"
             ;;
         n)
-            botname="\"username\":\"${OPTARG}\", "
+            botname="\"username\":$(json_escape "${OPTARG}"),"
             ;;
         c)
-            color="\"color\":\"${OPTARG}\", "
+            color="\"color\":$(json_escape "${OPTARG}"),"
             ;;
         a)
-            authorname="\"author_name\":\"${OPTARG}\", "
+            authorname="\"author_name\":$(json_escape "${OPTARG}"),"
             ;;
         t)
-            title="\"title\":\"${OPTARG}\", "
+            title="\"title\":$(json_escape "${OPTARG}"),"
             ;;
         l)
-            titlelink="\"title_link\":\"${OPTARG}\", "
+            titlelink="\"title_link\":$(json_escape "${OPTARG}"),"
             ;;
         f)
-            footer="\"footer\":\"${OPTARG}\", "
+            footer="\"footer\":$(json_escape "${OPTARG}"),"
             ;;
         w)
             WEBHOOK_URL="${OPTARG}"
@@ -84,10 +88,6 @@ if [[ $text == "" ]]; then
         done
     fi
 fi
-
-json_escape () {
-    printf '%s' "$1" | python -c 'import json,sys; print(json.dumps(sys.stdin.read()))'
-}
 
 payload="payload={$recipient$boticon$botname\"attachments\":[{$color$authorname$title$titlelink$footer\"text\":$(json_escape "\`\`\`$text\`\`\`"), \"mrkdwn_in\":[\"text\"]}]}"
 
