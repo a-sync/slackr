@@ -19,8 +19,8 @@ Examples:
     $(basename "$0") some text
     $(basename "$0") -c good -n friendlybot -i :cat: hello
     $(basename "$0") -r general < logfile.txt
-    ls -la | $(basename "$0") -r @smith
-    tail -n 10 /var/log/syslog | $(basename "$0") -t \"\$(id -un) \$(hostname -f)\"
+    ls -la /etc/ | $(basename "$0") -r @smith -f \"\$(history 1)\"
+    tail -n 10 /var/log/syslog | $(basename "$0") -a \"\$(id -un) \$(hostname -f)\"
 " 1>&2; exit 1; }
 
 json_escape () {
@@ -89,7 +89,7 @@ if [[ $text == "" ]]; then
     fi
 fi
 
-payload="payload={$recipient$boticon$botname\"attachments\":[{$color$authorname$title$titlelink$footer\"text\":$(json_escape "\`\`\`$text\`\`\`"), \"mrkdwn_in\":[\"text\"]}]}"
+payload="payload={$recipient$boticon$botname\"attachments\":[{$color$authorname$title$titlelink$footer\"text\":$(json_escape "\`\`\`$text\`\`\`"),\"mrkdwn_in\":[\"text\"]}]}"
 
 curl -s --data-urlencode "$payload" "$WEBHOOK_URL" 2>&1
 echo 
