@@ -5,21 +5,21 @@ WEBHOOK_URL=""
 usage() { echo "Usage: $(basename "$0") [options] <text>
 
 Options:
-    [-r <channel or @user>] 
-    [-i <bot icon emoji>] 
-    [-n <bot name>] 
-    [-c <good|warning|danger|#hex color>] 
-    [-a <author name>]
-    [-t <title>]
-    [-l <title link url>]
-    [-f <footer text>] 
-    [-w <webhook url>]
+    -r <channel name|DM channel ID|member ID>
+    -i <bot icon emoji>
+    -n <bot name>
+    -c <good|warning|danger|#hex color>
+    -a <author name>
+    -t <title text>
+    -l <title link URL>
+    -f <footer text>
+    -w <webhook URL>
 
 Examples:
     $(basename "$0") some text
     $(basename "$0") -c good -n friendlybot -i :cat: hello
     $(basename "$0") -r general < logfile.txt
-    ls -la /etc/ | $(basename "$0") -r @smith -f \"\$(history 1)\"
+    ls -la /etc/ | $(basename "$0") -r D024BE91L -f \"\$(history 1)\"
     tail -n 10 /var/log/syslog | $(basename "$0") -a \"\$(id -un) \$(hostname -f)\"
 " 1>&2; exit 1; }
 
