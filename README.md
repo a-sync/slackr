@@ -1,11 +1,11 @@
 # slackr
 
-### Requirements
+## Requirements
  * bash compatible shell
  * sane install of python
  * sane install of curl
 
-### Installation
+## Installation
  1. download and unpack the [archive](https://github.com/a-sync/slackr/archive/master.tar.gz)
  2. enter the unpacked directory and make [slackr](slackr) executable
  3. set [your webhook](https://my.slack.com/services/new/incoming-webhook/) URL in the WEBHOOK_URL variable of [slackr](slackr#L3)
@@ -17,7 +17,7 @@ read -p "Enter webhook URL: " WHURL && sed -i "3s|.*|WEBHOOK_URL=\"$WHURL\"|" sl
 sudo ln -s "$(readlink -f slackr)" /usr/local/bin
 ```
 
-### Usage
+## Usage
 ```
 Usage: slackr [options] <text>
 
@@ -39,3 +39,7 @@ Examples:
     ls -la /etc/ | slackr -r D024BE91L -f "$(history 1)"
     tail -n 10 /var/log/syslog | slackr -a "$(id -un) $(hostname -f)"
 ```
+
+## :warning: Important
+[@username format as a recipient (-r) is deprecated!  
+Slack API support will be removed on 2018-09-12!](https://github.com/a-sync/slackr/wiki#important)
