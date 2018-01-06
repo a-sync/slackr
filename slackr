@@ -5,7 +5,7 @@ WEBHOOK_URL=""
 usage() { echo "Usage: $(basename "$0") [options] <text>
 
 Options:
-    -r <channel name|DM channel ID|member ID>
+    -r <channel name|channel ID>
     -i <bot icon emoji>
     -n <bot name>
     -c <good|warning|danger|#hex color>
@@ -20,7 +20,7 @@ Examples:
     $(basename "$0") -c good -n friendlybot -i :cat: hello
     $(basename "$0") -r general < logfile.txt
     ls -la /etc/ | $(basename "$0") -r D024BE91L -f \"\$(history 1)\"
-    tail -n 10 /var/log/syslog | $(basename "$0") -a \"\$(id -un) \$(hostname -f)\"
+    tail /var/log/syslog | $(basename "$0") -a \"\$(id -un) \$(hostname -f)\"
 " 1>&2; exit 1; }
 
 json_escape () {
@@ -78,7 +78,7 @@ if [[ "$WEBHOOK_URL" == "" ]]; then
 fi
 
 text=$*
-if [[ $text == "" ]]; then
+if [[ "$text" == "" ]]; then
     if [ -t 0 ]; then
         echo "No text specified"$'\n'
         usage
@@ -91,5 +91,4 @@ fi
 
 payload="payload={$recipient$boticon$botname\"attachments\":[{$color$authorname$title$titlelink$footer\"text\":$(json_escape "\`\`\`$text\`\`\`"),\"mrkdwn_in\":[\"text\"]}]}"
 
-curl -s --data-urlencode "$payload" "$WEBHOOK_URL" 2>&1
-echo 
+echo "$(curl -s -S --data-urlencode "$payload" "$WEBHOOK_URL" 2>&1)"

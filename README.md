@@ -22,7 +22,7 @@ sudo ln -s "$(readlink -f slackr)" /usr/local/bin
 Usage: slackr [options] <text>
 
 Options:
-    -r <channel name|DM channel ID|member ID>
+    -r <channel name|channel ID>
     -i <bot icon emoji>
     -n <bot name>
     -c <good|warning|danger|#hex color>
@@ -37,7 +37,7 @@ Examples:
     slackr -c good -n friendlybot -i :cat: hello
     slackr -r general < logfile.txt
     ls -la /etc/ | slackr -r D024BE91L -f "$(history 1)"
-    tail -n 10 /var/log/syslog | slackr -a "$(id -un) $(hostname -f)"
+    tail /var/log/syslog | slackr -a "$(id -un) $(hostname -f)"
 ```
 
 ## :warning: Important
