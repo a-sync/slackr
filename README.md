@@ -42,4 +42,4 @@ Examples:
 
 ## :warning: Important
 [@username format as a recipient (-r) is deprecated!  
-Slack API support will be removed on 2018-09-12!](https://github.com/a-sync/slackr/wiki#important)
+Slack API support was be removed on 2018-09-12.](https://github.com/a-sync/slackr/wiki#important)
